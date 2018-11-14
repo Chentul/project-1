@@ -1,46 +1,86 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import FormControl from '@material-ui/core/FormControl';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Chip from '@material-ui/core/Chip';
+import FaceIcon from '@material-ui/icons/Face';
 
 class Contact extends Component {
 	state = {
-		names: ['Vicente Spencer Noriega Moreno'],
+		family: [
+			'Vicente Spencer Noriega Moreno',
+			'Diana Carolina Hernandez Ocampo',
+			'Tachito Noriega Hernandez',
+		],
 	};
 
-	handleOnSubmit = ( event ) => {
-		event.preventDefault();
-
-		const { value } = event.target.name;
+	handleOnSubmit = () => {
+		const element = document.getElementById("name");
 		const { state } = this;
 
 		this.setState({
 			...state,
-			names: [...state.names, value],
+			family: [...state.family, element.value],
 		});
 
-		value = '';
+		element.value = '';
+	}
+
+	handleChipDelete = (element) => {
+		console.log('handleChipDelete', element);
 	}
 
 	render() {
 		const { classes } = this.props;
-		const { names, value } = this.state;
+		const { family, value } = this.state;
 		return(
 			<div className={classes.root}>
-				<h1>The names will be displayed here ...</h1>
-				{names.length > 0 && (
-					<ul>
-						{names.map(name => <li key={name}>{name}</li>)}
-					</ul>
+				<h1>The family names will appear here ...</h1>
+				{family.length > 0 && (
+					family.map((familyName) => {
+						return (
+							<Chip
+								icon={<FaceIcon />}
+								label={familyName}
+								onDelete={this.handleChipDelete}
+								className={classes.chip}
+								color="primary"
+								key={familyName}
+							/>
+						);
+					})
 				)}
-				<form onSubmit={this.handleOnSubmit} className={classes.form}>
-					<Grid container spacing={24}>
-						<Grid item xs={12}>
-							<label >Name: </label>
-							<input className={classes.input} type="text" name="name" value={value} />
-							<input className={classes.submit} type="submit" />
-						</Grid>
-					</Grid>
-				</form>
+				<div className={classes.container}>
+					<FormControl 
+							fullWidth 
+							onSubmit={this.handleOnSubmit} >
+						<InputLabel htmlFor="input-with-icon-adornment">
+							Enter the full name of your family
+						</InputLabel>
+						<Input 
+							id="name"
+							startAdornment={
+								<InputAdornment postion="start">
+									<AccountCircle />
+								</InputAdornment>
+							}
+						/>
+						<Button 
+							variant="fab" 
+							arial-label="Add"
+							className={classes.button}
+							color="primary"
+							onClick={this.handleOnSubmit}
+							>
+							<AddIcon />
+						</Button>
+					</FormControl>
+				</div>
 			</div>
 		);
 	}
@@ -62,6 +102,15 @@ const styles = (theme) => ({
 			cursor: 'pointer',
 		},
 	},
+	container: {
+		margin: '0px 50px',
+	},
+	button: {
+		margin: theme.spacing.unit,
+	},
+	chip: {
+    margin: theme.spacing.unit,
+  },
 });
 
 export default withStyles(styles)(Contact);

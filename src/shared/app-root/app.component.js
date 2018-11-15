@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from '../components/header/header.component';
 import Home from '../components/home/home.component';
 import Service from '../components/service/service.component';
@@ -8,7 +8,7 @@ import Contact from '../components/contact/contact.component';
 import Footer from '../components/footer/footer.component';
 
 
-class App extends Component {
+class App extends React.Component {
 	render() {
 		return (
 			<div>

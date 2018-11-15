@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,48 +9,86 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Chip from '@material-ui/core/Chip';
 import FaceIcon from '@material-ui/icons/Face';
+import TextField from '@material-ui/core/TextField';
 
-class Contact extends Component {
+class Contact extends React.Component {
 	state = {
 		family: [
-			'Vicente Spencer Noriega Moreno',
-			'Diana Carolina Hernandez Ocampo',
-			'Tachito Noriega Hernandez',
+			{
+				name: 'Vicente Spencer Noriega Moreno',
+				sex: 'man',
+			},
+			{
+				name: 'Diana Carolina Hernandez Ocampo',
+				sex: 'female',
+			},
+			{
+				name: 'Tachito Noriega Hernandez',
+				sex: 'dog',
+			},
 		],
 	};
 
 	handleOnSubmit = () => {
-		const element = document.getElementById("name");
+		const familyNameTag = document.getElementById("input-with-name");
 		const { state } = this;
 
 		this.setState({
 			...state,
-			family: [...state.family, element.value],
+			family: [...state.family, familyNameTag.value],
 		});
 
-		element.value = '';
+		familyNameTag.value = '';
 	}
 
-	handleChipDelete = (element) => {
-		console.log('handleChipDelete', element);
+	handleChipDelete = (deleteName) => {
+		const { family } = this.state;
+		const newFamily = family.filter(familyNames => familyNames !== deleteName);
+		this.setState({
+			...this.state,
+			family: newFamily,
+		});
+	}
+
+	handleChange = (name) => (event) => {
+		this.setState({
+			...this.state,
+			[name]: event.target.value,
+		});
 	}
 
 	render() {
 		const { classes } = this.props;
-		const { family, value } = this.state;
+		const { family, gender } = this.state;
+		const genderMap = [
+			{
+				value: 'male',
+				label: 'Male',
+			},
+			{
+				value: 'female',
+				label: 'Female',
+			},
+			{
+				value: 'pet',
+				value: 'Pet',
+			},
+		];
 		return(
 			<div className={classes.root}>
-				<h1>The family names will appear here ...</h1>
+				<h1>The names of the family will appear here ...</h1>
 				{family.length > 0 && (
 					family.map((familyName) => {
 						return (
 							<Chip
 								icon={<FaceIcon />}
-								label={familyName}
-								onDelete={this.handleChipDelete}
+								label={familyName.name}
+								onDelete={() => {
+									this.handleChipDelete(familyName.name);
+								}}
 								className={classes.chip}
 								color="primary"
-								key={familyName}
+								key={familyName.name}
 							/>
 						);
 					})
@@ -63,13 +101,26 @@ class Contact extends Component {
 							Enter the full name of your family
 						</InputLabel>
 						<Input 
-							id="name"
+							id="input-with-name"
 							startAdornment={
 								<InputAdornment postion="start">
 									<AccountCircle />
 								</InputAdornment>
 							}
 						/>
+						<TextField
+							id="select-gender"
+							select
+							label="Select gender"
+							value={gender}
+							onChange={this.handleChange('gender')}
+						>
+							{genderMap.map((option) => {
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							})}
+						</TextField>
 						<Button 
 							variant="fab" 
 							arial-label="Add"

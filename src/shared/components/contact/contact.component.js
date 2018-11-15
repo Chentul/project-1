@@ -6,12 +6,12 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import FormControl from '@material-ui/core/FormControl';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
 import Chip from '@material-ui/core/Chip';
 import FaceIcon from '@material-ui/icons/Face';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
+import classNames from 'classnames';
 
 class Contact extends React.Component {
 	state = {
@@ -121,11 +121,8 @@ class Contact extends React.Component {
 						})}
 					</div>
 				)}
-				<FormControl 
-						fullWidth 
-						onSubmit={this.handleOnSubmit}
-						className={classes.form}>
-					<Grid item xs={12} className={classes.inputs}>
+				<Grid container spacing={24}>
+					<Grid item xs={6} className={classNames(classes.inputs, classes.fixingInput)}>
 						<InputLabel 
 							shrink={true}
 							htmlFor="input-with-name"
@@ -143,7 +140,7 @@ class Contact extends React.Component {
 							placeholder="Juan Perez ..."
 						/>
 					</Grid>
-					<Grid item xs={12} className={classes.inputs}>
+					<Grid item xs={6} className={classes.inputs}>
 						<TextField
 							id="select-gender"
 							select
@@ -167,18 +164,12 @@ class Contact extends React.Component {
 							})}
 						</TextField>
 					</Grid>
-					<Grid item xs={12} className={classes.textCenter}>
-						<Button 
-							variant="fab" 
-							arial-label="Add"
-							className={classes.button}
-							color="primary"
-							onClick={this.handleOnSubmit}
-							>
-							<AddIcon />
+					<Grid item xs={12}>
+						<Button onClick={this.handleOnSubmit} variant="contained" color="default">
+							Send
 						</Button>
 					</Grid>
-				</FormControl>
+				</Grid>
 			</div>
 		);
 	}
@@ -203,9 +194,6 @@ const styles = (theme) => ({
 	container: {
 		margin: '0px 50px',
 	},
-	button: {
-		margin: '30px 0px',
-	},
 	chip: {
     margin: theme.spacing.unit,
   },
@@ -220,6 +208,9 @@ const styles = (theme) => ({
   },
   menu: {
   	width: '200px',
+  },
+  fixingInput: {
+  	marginTop: '23px',
   },
 });
 

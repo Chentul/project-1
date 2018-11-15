@@ -10,13 +10,15 @@ import AddIcon from '@material-ui/icons/Add';
 import Chip from '@material-ui/core/Chip';
 import FaceIcon from '@material-ui/icons/Face';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import MenuItem from '@material-ui/core/MenuItem';
 
 class Contact extends React.Component {
 	state = {
 		family: [
 			{
 				name: 'Vicente Spencer Noriega Moreno',
-				sex: 'man',
+				sex: 'male',
 			},
 			{
 				name: 'Diana Carolina Hernandez Ocampo',
@@ -31,19 +33,29 @@ class Contact extends React.Component {
 
 	handleOnSubmit = () => {
 		const familyNameTag = document.getElementById("input-with-name");
+		const genderTag = document.getElementById("select-gender");
+
 		const { state } = this;
 
 		this.setState({
 			...state,
-			family: [...state.family, familyNameTag.value],
+			family: [
+				...state.family, 
+				{
+					name: familyNameTag.value,
+					sex: genderTag.value,
+				},
+			],
+			gender: "default",
 		});
 
 		familyNameTag.value = '';
+		genderTag.value = 'gender';
 	}
 
 	handleChipDelete = (deleteName) => {
 		const { family } = this.state;
-		const newFamily = family.filter(familyNames => familyNames !== deleteName);
+		const newFamily = family.filter(familyNames => familyNames.name !== deleteName);
 		this.setState({
 			...this.state,
 			family: newFamily,
@@ -59,8 +71,12 @@ class Contact extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-		const { family, gender } = this.state;
+		const { family, gender = "default" } = this.state;
 		const genderMap = [
+			{
+				value: 'default',
+				label: 'Select gender',
+			},
 			{
 				value: 'male',
 				label: 'Male',
@@ -71,56 +87,87 @@ class Contact extends React.Component {
 			},
 			{
 				value: 'pet',
-				value: 'Pet',
+				label: 'Pet',
 			},
 		];
+		const getColorChip = (gender) => {
+			switch(gender) {
+				case 'male': 
+					return 'primary';
+				case 'female': 
+					return 'secondary';
+				default: 
+					return 'default';
+			};
+		}
 		return(
 			<div className={classes.root}>
-				<h1>The names of the family will appear here ...</h1>
+				<h1 className={classes.textCenter}>The names of the family will appear here ...</h1>
 				{family.length > 0 && (
-					family.map((familyName) => {
-						return (
-							<Chip
-								icon={<FaceIcon />}
-								label={familyName.name}
-								onDelete={() => {
-									this.handleChipDelete(familyName.name);
-								}}
-								className={classes.chip}
-								color="primary"
-								key={familyName.name}
-							/>
-						);
-					})
+					<div className={classes.textCenter}>
+						{family.map((familyMember) => {
+							return (
+								<Chip
+									icon={<FaceIcon />}
+									label={familyMember.name}
+									onDelete={() => {
+										this.handleChipDelete(familyMember.name);
+									}}
+									className={classes.chip}
+									color={getColorChip(familyMember.sex)}
+									key={familyMember.name}
+								/>
+							);
+						})}
+					</div>
 				)}
-				<div className={classes.container}>
-					<FormControl 
-							fullWidth 
-							onSubmit={this.handleOnSubmit} >
-						<InputLabel htmlFor="input-with-icon-adornment">
-							Enter the full name of your family
+				<FormControl 
+						fullWidth 
+						onSubmit={this.handleOnSubmit}
+						className={classes.form}>
+					<Grid item xs={12} className={classes.inputs}>
+						<InputLabel 
+							shrink={true}
+							htmlFor="input-with-name"
+						>
+							Name
 						</InputLabel>
 						<Input 
+							fullWidth
 							id="input-with-name"
 							startAdornment={
 								<InputAdornment postion="start">
 									<AccountCircle />
 								</InputAdornment>
 							}
+							placeholder="Juan Perez ..."
 						/>
+					</Grid>
+					<Grid item xs={12} className={classes.inputs}>
 						<TextField
 							id="select-gender"
 							select
-							label="Select gender"
+							label="Gender"
 							value={gender}
 							onChange={this.handleChange('gender')}
+							fullWidth
+							SelectProps={{
+								MenuProps: {
+									className: classes.menu,
+								}
+							}}
+							margin="normal"
 						>
 							{genderMap.map((option) => {
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
+								return (
+									<MenuItem value={option.value} key={option.value}>
+										{option.label}
+									</MenuItem>
+								);
 							})}
 						</TextField>
+					</Grid>
+					<Grid item xs={12} className={classes.textCenter}>
 						<Button 
 							variant="fab" 
 							arial-label="Add"
@@ -130,8 +177,8 @@ class Contact extends React.Component {
 							>
 							<AddIcon />
 						</Button>
-					</FormControl>
-				</div>
+					</Grid>
+				</FormControl>
 			</div>
 		);
 	}
@@ -157,10 +204,22 @@ const styles = (theme) => ({
 		margin: '0px 50px',
 	},
 	button: {
-		margin: theme.spacing.unit,
+		margin: '30px 0px',
 	},
 	chip: {
     margin: theme.spacing.unit,
+  },
+  form: {
+  	margin: '20px 0px',
+  },
+  textCenter: {
+  	textAlign: 'center',
+  },
+  inputs: {
+  	margin: '10px 0px',
+  },
+  menu: {
+  	width: '200px',
   },
 });
 
